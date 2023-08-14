@@ -77,3 +77,79 @@ We also performed correlation analysis and visualized the feature values. Users 
 
 ![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/4f558ae5-f076-4859-a4be-4457bd0700af)
 
+
+## Data normalizing and scaling
+
+After QC, the next step is to Normalize, Find Variable Genes, and Scale the data.
+- Normalize the data. A global-scaling normalization method "LogNormalize" that normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor (10,000 by default), and log-transforms the result (The normalized formula is: A = log( 1 + ( UMIA ÷ UMITotal ) × 10000). According to seurat official recommendations, in general, the default parameters are suitable for most data.
+- Find Variable Genes. That is calculating a subset of features that exhibit high cell-to-cell variation in the dataset (i.e, they are highly expressed in some cells, and lowly expressed in others). Focusing on these genes in downstream analysis helps to highlight biological signal in single-cell datasets. By default, seurat return 2,000 features per dataset.
+- Scale Data. A linear transformation ("scaling") that is a standard pre-processing step prior to dimensional reduction techniques like PCA. The purpose of Scaling the data is (1)Shifts the expression of each gene, so that the mean expression across cells is 0; (2)Scales the expression of each gene, so that the variance across cells is 1. After such treatment, the influence of highly expressed genes can be eliminated.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/6924cf45-d9c2-4e30-813a-10d94aa76688)
+
+## Perform PCA linear dimensionality reduction.
+
+By default, the PCA dimensional reduction calculates the first 50 principal components.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/a0c7f914-d5d2-41c4-8507-3547498e6ae5)
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/d986fce9-155a-4f3a-b3f8-0c15cf12a2b0)
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/b13df7db-5004-41c7-834b-8c1f4156d885)
+
+## Cell clustering
+
+**Before performing cell clustering, we first have to determine two parameters: `the number of PCs` and `Resolution`**
+1. When determining the number of principal components (PCs) to use, it is crucial to strike the right balance. Using too many PCs can introduce interference in the clustering process, while using too few PCs may not adequately explain the dataset. Therefore, we recommend using the Elbow Plot method to determine the optimal number of PCs to use. In the Elbow Plot, the number of PCs that correspond to the "elbow" should be selected for clustering. These PCs explain a significant portion of the dataset.
+2. Resolution. The Resolution parameter determines the number of clusters obtained from downstream clustering. Here, we recommend using clustree to determine the optimal resolution for your data. clustree allows you to perform clustering at various resolutions and visualize the results, enabling you to assess the number of different cell clusters obtained at each resolution.
+
+> Tips: If Resolution is chosen to be small, the clusters will be divided into fewer clusters, which will merge some similar cells into one big cluster, thus lead to challenges in subsequent cell type identification and the loss of valuable cell type information. If the Resolution is too large, the cluster will be divided into too many clusters, which will increase the difficulty of subsequent cell type identification. Therefore, we usually choose a medium value for Resolution, so that clusters with the same marker gene and similar distance in umap/tSNE can be categorized as the same cell type when identifying cell types.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/1b632d3a-f309-4fa9-860e-2297704254d5)
+
+After determining the number of PCs and Resolution, then you can click the button for cell clustering.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/a8f68ef4-1f65-4514-b309-9972d808a4e7)
+
+
+## Perform non-linear dimensional reduction (UMAP/tSNE)
+
+Once the cell clustering is completed, the user can click the button to perform UMAP/tSNE non-linear dimensional reduction and visualize the results.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/97b7f548-56c9-48ba-bf9b-14bfecc34156)
+
+## Marker gene identification/differential expression analysis
+
+Marker gene identification, in essence, is actually to perform differential analysis to identify the differentially expressed genes. Marker genes of a cluster are typically specifically expressed only in that cluster and not in other clusters. Therefore, when identifying markers, we usually set the parameter "only.pos=TRUE," which means that only differentially up-regulated genes are retained.
+
+In this module, three modes for identifying marker genes are provided: 
+1. One-click identification of marker genes for all clusters (slower, runtime proportional to number of cells and clusters)；
+2. Identifies user-specified marker genes for a particular cluster;
+3. The user can specify the identification of marker genes between two specific clusters, conducting a differential expression analysis for these clusters.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/2cfb71e2-356f-4c6a-8eb0-1a2a3cb7eaba)
+
+## Marker gene visualization
+
+We provide several different visualizations to show marker genes.
+
+- `Heatmap` display of marker genes in each cluster, user can select the number of marker genes to be displayed.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/806f166b-3cb3-469d-8dc5-65b7d9baa51b)
+
+- `Dot plot`
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/2a9bc4a9-dc72-4f38-967a-fd2867d28e52)
+
+- User inputs genes or gene set for Violin plot visualization.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/fbb82cab-5c7e-4a7e-951d-80f89eef1413)
+
+- User inputs marker gene or gene set and perform feature Plot visualization, mapping the expression of marker genes to UMAP or tSNE.
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/de56cef9-76a5-488c-bd28-42821b0efa31)
+
+- Ridge plot
+
+![image](https://github.com/athanasy-ljw/Seurat_Plugin_for_TBtools/assets/53424383/829b9c83-b522-4430-bf1f-f55c0f425601)
+
+
+
