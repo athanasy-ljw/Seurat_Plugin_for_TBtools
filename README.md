@@ -1,5 +1,9 @@
 # Seurat plugin for TBtools
 
+## Install TBtools
+
+First, users should install TBtools. You can download TBtools from the following link: https://tbtools.cowtransfer.com/s/ee62fed4375142
+
 ## Install seurat plugin
 
 Open TBtools and install the Rserver plugin in the plugin store first.
